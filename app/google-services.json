@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "406243865943",
+    "firebase_url": "https://teacherconnection-a1fa1.firebaseio.com",
+    "project_id": "teacherconnection-a1fa1",
+    "storage_bucket": "teacherconnection-a1fa1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406243865943:android:f7de529c7be271cb",
+        "android_client_info": {
+          "package_name": "com.example.eliran.teacherconnection"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406243865943-orrlbbe4bcjtt5jghso4tvuev6gc3euk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.eliran.teacherconnection",
+            "certificate_hash": "a86642d08636d7547a4588e807b46e61f02323b6"
+          }
+        },
+        {
+          "client_id": "406243865943-etrkglu24lh4t7lrqu1bsjmi5mb7m6qi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwG9PGpy-BGfUMIoZUrovQ4Pce6KELueo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406243865943-etrkglu24lh4t7lrqu1bsjmi5mb7m6qi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

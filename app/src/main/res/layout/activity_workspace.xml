@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Workspace">
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="Logout"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <fragment
+        android:id="@+id/listFrag"
+        android:name="com.example.eliran.teacherconnection.ListFrag"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:layout="@layout/fragment_list" />
+
+    <fragment
+        android:id="@+id/detailFrag"
+        android:name="com.example.eliran.teacherconnection.DetailFrag"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:layout="@layout/fragment_detail" />
+
+</LinearLayout>
