@@ -46,6 +46,13 @@
             android:layout_marginTop="8dp"
             android:text="@string/register" />
 
+        <Button
+            android:id="@+id/exx"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="Button" />
+
     </LinearLayout>
 
     <ImageView

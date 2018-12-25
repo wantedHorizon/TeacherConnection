@@ -12,7 +12,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity   {
 
     TextView et1,et2;
-    Button login ,register;
+    Button login ,register,exx;
     Toast t;
     String idCheck;
     public static  final String MY_PREF_FILENAME="com.example.eliran.teacherconnection.DATA";
@@ -40,7 +40,14 @@ public class MainActivity extends AppCompatActivity   {
             startActivity(intent);
 
         }
+            exx=findViewById(R.id.exx);
+        exx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {Intent intent = new Intent(MainActivity.this,com.example.eliran.teacherconnection.Main2Activity.class  );
+                startActivity(intent);
 
+            }
+        });
         et1=findViewById(R.id.tvTitle);
         et2=findViewById(R.id.tvLogReg);
         t.makeText(this,"login",Toast.LENGTH_SHORT);
@@ -51,7 +58,7 @@ public class MainActivity extends AppCompatActivity   {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,com.example.eliran.teacherconnection.Main2Activity.class  );
+                Intent intent = new Intent(MainActivity.this,com.example.eliran.teacherconnection.Main2Login.class  );
                 startActivity(intent);
             }
         });

@@ -2,20 +2,28 @@ package com.example.eliran.teacherconnection;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class Main2Login extends AppCompatActivity {
 
     Button btnLogin ;
     EditText user,password;
     String Suser,Spass;
-
-    String idCheck;
+    private FirebaseAuth mAuth;//fire base auth
+    String idCheck;//Local LOgin
     public static  final String MY_PREF_FILENAME="com.example.eliran.teacherconnection.DATA";
 
     @Override
@@ -29,6 +37,7 @@ public class Main2Login extends AppCompatActivity {
         idCheck=editor.getString("user","-1");
         Toast.makeText(this,idCheck,Toast.LENGTH_SHORT).show();
 
+        mAuth = FirebaseAuth.getInstance();
 
 
         if(Integer.parseInt(idCheck)>-1){
@@ -54,14 +63,46 @@ public class Main2Login extends AppCompatActivity {
                 if(Suser.isEmpty()||Spass.isEmpty()){
                     Toast.makeText(Main2Login.this,"Please fill all fields",Toast.LENGTH_LONG).show();
 
+                    //sign in online methood
+
+
 
                 }
 
                 else {
+
+                    mAuth.signInWithEmailAndPassword(Suser, Spass)
+                            .addOnCompleteListener(Main2Login.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Toast.makeText(Main2Login.this, "signInWithEmail:success",Toast.LENGTH_SHORT).show();
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        // updateUI(user);
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        // Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                        Toast.makeText(Main2Login.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                        //updateUI(null);
+                                    }
+
+                                    // ...
+                                }
+                            });
+
+
+
+
+
+
+
+                    //old Local login check
                     int x=checkLogin(Suser,Spass);
 
                     if(x==-1){
-                        Toast.makeText(Main2Login.this,"login failure  "+x,Toast.LENGTH_LONG).show();
+                      //  Toast.makeText(Main2Login.this,"login failure  "+x,Toast.LENGTH_LONG).show();
 
                     }
                     else{/*
@@ -83,6 +124,7 @@ public class Main2Login extends AppCompatActivity {
 
                         intent.putExtra("userID", x);
                         startActivity(intent);
+                        finish();
 
 
 
@@ -93,6 +135,25 @@ public class Main2Login extends AppCompatActivity {
         });
 
 
+    }
+
+    public void onStart() {
+        super.onStart();
+
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        //
+        if(currentUser!=null){//if user is loged out
+
+            Intent intent =new Intent(Main2Login.this,
+                    com.example.eliran.teacherconnection.MainActivity.class);// need to be changed to workspace
+
+                startActivity(intent);
+                finish();
+        }
+       // updateUI(currentUser);*/
     }
 
 

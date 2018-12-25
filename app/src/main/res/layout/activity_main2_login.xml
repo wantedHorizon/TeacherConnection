@@ -23,11 +23,11 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
-        android:ems="10"
-        android:hint="@string/username"
-        android:inputType="textPersonName"
         android:autofillHints=""
-        android:importantForAutofill="no" />
+        android:ems="10"
+        android:hint="@string/email"
+        android:importantForAutofill="no"
+        android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/etPassword"

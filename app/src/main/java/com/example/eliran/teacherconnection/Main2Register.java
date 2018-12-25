@@ -1,6 +1,7 @@
 package com.example.eliran.teacherconnection;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,26 +15,36 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 
 public class Main2Register extends AppCompatActivity {
     AutoCompleteTextView regType;
     ImageView arrow;
-    EditText regFirst,regLast, regPass,regCity,regUsername,regPhone;
+    EditText regFirst,regLast, regPass,regCity,regEmail,regPhone;
     public static  final  String [] types={"Teacher","Student"};
+    private FirebaseAuth mAuth;//fire base auth
+    private  FirebaseAuth.AuthStateListener authStateListener;
 
     Button btnReg1;
-    String name="",pass="",city="",type="",user="",phone="",last="";
+    String name="",pass="",city="",type="",email="",phone="",last="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2_register);
+        //check login
+        mAuth = FirebaseAuth.getInstance();
+
 
         regFirst=findViewById(R.id.regFirstname);
         regLast=findViewById(R.id.regLastname);
         regCity=findViewById(R.id.regCity);
         regPass=findViewById(R.id.regPass);
         regType=findViewById(R.id.regType);
-        regUsername=findViewById(R.id.regUsername);
+        regEmail=findViewById(R.id.regEmail);
         regPhone=findViewById(R.id.regPhone);
         arrow=findViewById(R.id.iwArrow);
 
@@ -67,11 +78,11 @@ public class Main2Register extends AppCompatActivity {
                 pass=regPass.getText().toString().trim();
                 type=regType.getText().toString().trim();
                 city=regCity.getText().toString().trim();
-                user=regUsername.getText().toString().trim();
+                email=regEmail.getText().toString().trim();
                 phone=regPhone.getText().toString().trim();
 
 
-                if(name.isEmpty()||last.isEmpty()||pass.isEmpty()||type.isEmpty()||city.isEmpty()||user.isEmpty()||phone.isEmpty()){
+                if(name.isEmpty()||last.isEmpty()||pass.isEmpty()||type.isEmpty()||city.isEmpty()||email.isEmpty()||phone.isEmpty()){
                     Toast.makeText(Main2Register.this,"Please fill all fields",Toast.LENGTH_LONG).show();
                 }
                 else  if(!type.equals("Student")&&!type.equals("Teacher"))
@@ -81,9 +92,32 @@ public class Main2Register extends AppCompatActivity {
                     if(type.equals("Student"))
                         s=1;
                     else s=0;
-                   User u=new User(name,last,user,phone,city,type,pass,s);
+
+
+                   User u=new User(name,last,email,phone,city,type,pass,s);
                    ApplicationClass.addUser(u);
-                    Toast.makeText(Main2Register.this,"Added user:"+user,Toast.LENGTH_SHORT).show();
+
+                    mAuth.createUserWithEmailAndPassword(email, pass)
+                            .addOnCompleteListener(Main2Register.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Toast.makeText(Main2Register.this,"REG sucses",Toast.LENGTH_SHORT).show();
+                                        //FirebaseUser user = mAuth.getCurrentUser();
+                                        //  updateUI(user);
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+
+                                        Toast.makeText(Main2Register.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                        //updateUI(null);
+                                    }
+
+                                    // ...
+                                }
+                            });
+                    Toast.makeText(Main2Register.this,"Added user:"+email,Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Main2Register.this,
                             com.example.eliran.teacherconnection.Main2Login.class  );
                     startActivity(intent);
