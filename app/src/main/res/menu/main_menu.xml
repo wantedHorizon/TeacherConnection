@@ -5,7 +5,9 @@
     <item
         android:id="@+id/menuHomeBTN"
         android:title="@string/home" />
-    <item android:title="@string/account_setting" />
+    <item
+        android:id="@+id/menuSettingAccount"
+        android:title="@string/account_setting" />
     <item
         android:id="@+id/menuLogoutBTN"
         android:title="@string/log_out" />

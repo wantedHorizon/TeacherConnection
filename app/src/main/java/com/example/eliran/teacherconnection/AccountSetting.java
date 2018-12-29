@@ -1,9 +1,17 @@
 package com.example.eliran.teacherconnection;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,49 +27,122 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.jar.Attributes;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 public class AccountSetting extends AppCompatActivity {
-    EditText firstname , lastname , phone ,email,pass;
+    public static final String MY_PREF_FILENAME = "com.example.eliran.teacherconnection.DATA";
+
+    EditText firstname , lastname , phone ,city,pass;
     String Sname,Slastname,Sphone,Semail,Spass,Scity,Stype;
     private  DatabaseReference mUserDatabase;
     private FirebaseUser  mCurrentUser;
     TextView txt22;
+    Boolean math=false,eng=false,sch=false;
+    CheckBox cbMath,cbEng,cbSch;
+    Button btnApply;
+    private FirebaseUser current_user;
+
     public  ArrayList<User> users;
 
-
+    Toolbar toolbar1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_setting2);
 
+         toolbar1 = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar1);
+        getSupportActionBar().setTitle("Account Setting");
+
         firstname=findViewById(R.id.etName_setting);
         lastname=findViewById(R.id.etSettingLastname);
         phone=findViewById(R.id.etSettingPhone);
-        email=findViewById(R.id.etSettingMail);
+        city=findViewById(R.id.etSettingCity);
         pass=findViewById(R.id.etSettingPASS);
-       users =new ArrayList<>();
+        cbMath=findViewById(R.id.cbMath);
+        cbEng=findViewById(R.id.cbEng);
+        cbSch=findViewById(R.id.cbSci);
+        btnApply=findViewById(R.id.btnApply);
+
+        btnApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(cbMath.isChecked())
+                    math=true;
+
+                else math=false;
+
+                if(cbEng.isChecked())
+                    eng=true;
+
+                else eng=false;
+
+                if(cbSch.isChecked())
+                    sch=true;
+
+                else sch=false;
+
+                Toast.makeText(AccountSetting.this,math+" "+eng+" "+sch+" ",Toast.LENGTH_SHORT).show();
+
+                Sname=firstname.getText().toString().trim().toLowerCase();
+                Slastname=lastname.getText().toString().toLowerCase();
+                Sphone=phone.getText().toString().trim().toLowerCase();
+                Scity=city.getText().toString().trim().toLowerCase();
+
+                if(Scity.isEmpty() ||Slastname.isEmpty()||Sphone.isEmpty()||Sname.isEmpty())
+                    Toast.makeText(AccountSetting.this,"Error please fill all parts",Toast.LENGTH_SHORT).show();
+
+                else if (sch==false&&math==false&&eng==false)
+                    Toast.makeText(AccountSetting.this,"please choose one subject",Toast.LENGTH_SHORT).show();
+
+                else
+                    update(Sname,Slastname,Sphone,Scity,math,eng,sch);
+
+
+
+
+
+
+            }
+        });
+
+
+
+
+
+
+       //users =new ArrayList<>();
        txt22=findViewById(R.id.txt22);
 
         mCurrentUser=FirebaseAuth.getInstance().getCurrentUser();
         String cUID=mCurrentUser.getUid();
-        mUserDatabase=FirebaseDatabase.getInstance().getReference().child("users")/*.child(cUID)*/;
-        mUserDatabase.addValueEventListener(new ValueEventListener() {
+        mUserDatabase=FirebaseDatabase.getInstance().getReference().child("users").child(cUID);
+        mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                /*
+
 
                 Sname=dataSnapshot.child("name").getValue().toString();
                 Slastname=dataSnapshot.child("lastname").getValue().toString();
                 Spass=dataSnapshot.child("password").getValue().toString();
                 Sphone=dataSnapshot.child("phone").getValue().toString();
-                Semail=dataSnapshot.child("email").getValue().toString();
-              //  Sphone=dataSnapshot.child("phone").getValue().toString();*/
+                Scity=dataSnapshot.child("city").getValue().toString();
+                Sphone=dataSnapshot.child("phone").getValue().toString();
 
-                String str1="";
+                firstname.setText(Sname);
+                lastname.setText(Slastname);
+                phone.setText(Sphone);
+                city.setText(Scity);
+                pass.setText(Spass);
 
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                //String str1="";
+
+                //for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                   //str1+=snapshot.getKey().toString()+" ||";
-
+/*
                     Sname=snapshot.child("name").getValue().toString();
                     Slastname=snapshot.child("lastname").getValue().toString();
                     Spass=snapshot.child("password").getValue().toString();
@@ -75,14 +156,14 @@ public class AccountSetting extends AppCompatActivity {
 
 
                 }
-                ApplicationClass.users=users;
+              //  ApplicationClass.users=users;*/
              //   txt22.setText(str1);
 
 
-
+/*
                     Intent intent = new Intent(AccountSetting.this,
                             com.example.eliran.teacherconnection.Workspace.class  );
-                    startActivity(intent);
+                    startActivity(intent);*/
 
 
 
@@ -105,6 +186,76 @@ public class AccountSetting extends AppCompatActivity {
 
 
 
+
+    }// end OnCREATE
+
+
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.main_menu, menu );
+        menu.findItem(R.id.menuSettingAccount).setVisible(false);
+        return true;
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if(item.getItemId()==R.id.menuLogoutBTN){
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREF_FILENAME, MODE_PRIVATE).edit();
+
+            editor.putString("user", "-1");
+            editor.commit();
+
+            FirebaseAuth.getInstance().signOut();
+
+            Intent intent = new Intent(com.example.eliran.teacherconnection.AccountSetting.this,
+                    com.example.eliran.teacherconnection.MainActivity.class);
+            startActivity(intent);
+            finish();
+
+        }
+        else {
+            Intent intent = new Intent(com.example.eliran.teacherconnection.AccountSetting.this,
+                    com.example.eliran.teacherconnection.Workspace.class);
+            startActivity(intent);
+
+        }
+
+        return  true;
+    }
+
+
+    public void update(String name,String last,String phone,String city ,boolean math,boolean eng ,boolean sch){
+
+
+        current_user=FirebaseAuth.getInstance().getCurrentUser();
+        String cuID=current_user.getUid();
+        //Toast.makeText(Main2Register.this,cuID+" --"+email,Toast.LENGTH_SHORT).show();
+        mUserDatabase=FirebaseDatabase.getInstance().getReference().child("users").child(cuID);
+        mUserDatabase.child("city").setValue(city);
+        mUserDatabase.child("name").setValue(name);
+        mUserDatabase.child("lastname").setValue(last);
+        mUserDatabase.child("phone").setValue(phone);
+
+        mUserDatabase.child("sub").child("math").setValue(math);
+        mUserDatabase.child("sub").child("eng").setValue(math);
+        mUserDatabase.child("sub").child("sci").setValue(math);
+
+
+    }
+
+
+    public void setUsertype(String type){
+
+        SharedPreferences.Editor editor =getSharedPreferences(MY_PREF_FILENAME,MODE_PRIVATE).edit();
+        // editor.putString("user",ss);
+
+
+        editor.putString("type",type);
+        editor.commit();
 
     }
 }

@@ -1,5 +1,6 @@
 package com.example.eliran.teacherconnection;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -16,14 +17,21 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Main2Login extends AppCompatActivity {
 
     Button btnLogin ;
+    //progress dialog
+    ProgressDialog mRegProgress;
     EditText user,password;
     String Suser,Spass;
     private FirebaseAuth mAuth;//fire base auth
-    String idCheck;//Local LOgin
+    String idCheck,type;//Local LOgin
     public static  final String MY_PREF_FILENAME="com.example.eliran.teacherconnection.DATA";
 
    // private ProgressDialog mLoginProgress;
@@ -72,6 +80,11 @@ public class Main2Login extends AppCompatActivity {
                 }
 
                 else {
+                    mRegProgress=new ProgressDialog(Main2Login.this);
+                    mRegProgress.setTitle("Signing In");
+                    mRegProgress.setMessage("Please wait while we are login you in ");
+                    mRegProgress.setCanceledOnTouchOutside(false);
+                    mRegProgress.show();
 
                     mAuth.signInWithEmailAndPassword(Suser, Spass)
                             .addOnCompleteListener(Main2Login.this, new OnCompleteListener<AuthResult>() {
@@ -83,6 +96,9 @@ public class Main2Login extends AppCompatActivity {
                                         String ss=mAuth.getUid().toString();
                                         SharedPreferences.Editor editor =getSharedPreferences(MY_PREF_FILENAME,MODE_PRIVATE).edit();
                                         editor.putString("user",ss);
+
+                                        findType();
+                                      //  editor.putString("type","");
                                         editor.commit();
                                         Toast.makeText(Main2Login.this, "signInWithEmail:success",Toast.LENGTH_SHORT).show();
                                         FirebaseUser user = mAuth.getCurrentUser();
@@ -90,6 +106,7 @@ public class Main2Login extends AppCompatActivity {
                                                 com.example.eliran.teacherconnection.Workspace.class);
 
                                       //  intent.putExtra("userID", x);
+                                        mRegProgress.dismiss();
                                         startActivity(intent);
                                         finish();
 
@@ -97,6 +114,7 @@ public class Main2Login extends AppCompatActivity {
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         // Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                        mRegProgress.hide();
                                         Toast.makeText(Main2Login.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
                                         //updateUI(null);
@@ -151,6 +169,52 @@ public class Main2Login extends AppCompatActivity {
 
     }
 
+    public void findType(){
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String cUID = mCurrentUser.getUid().toString();
+        // this.id = cUID;
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //String type;
+
+        if (currentUser != null) {
+            DatabaseReference mUserDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(cUID);
+
+            mUserDatabase.addValueEventListener(new ValueEventListener() {
+
+
+
+
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                     type=dataSnapshot.child("type").getValue().toString()+"";
+                    SharedPreferences.Editor editor =getSharedPreferences(MY_PREF_FILENAME,MODE_PRIVATE).edit();
+                   // editor.putString("user",ss);
+
+
+                    editor.putString("type",type);
+                    editor.commit();
+
+
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    databaseError.toString();
+
+                }
+            });
+
+
+
+        }
+
+    }
+
     public void onStart() {
         super.onStart();
 
@@ -167,6 +231,8 @@ public class Main2Login extends AppCompatActivity {
                 startActivity(intent);
                 finish();
         }
+
+
        // updateUI(currentUser);*/
     }
 

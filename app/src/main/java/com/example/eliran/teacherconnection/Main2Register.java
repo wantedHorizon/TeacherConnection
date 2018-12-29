@@ -2,6 +2,7 @@ package com.example.eliran.teacherconnection;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ import java.util.HashMap;
 
 
 public class Main2Register extends AppCompatActivity {
+    public static final String MY_PREF_FILENAME = "com.example.eliran.teacherconnection.DATA";
+
     AutoCompleteTextView regType;
     ImageView arrow;
     EditText regFirst,regLast, regPass,regCity,regEmail,regPhone;
@@ -50,7 +53,7 @@ public class Main2Register extends AppCompatActivity {
         setContentView(R.layout.activity_main2_register);
         //check login
         mAuth = FirebaseAuth.getInstance();
-
+        //loading screen
         mRegProgress=new ProgressDialog(this);
 
         regFirst=findViewById(R.id.regFirstname);
@@ -119,6 +122,7 @@ public class Main2Register extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
+                                        setUsertype(type);
 
 
                                         current_user=FirebaseAuth.getInstance().getCurrentUser();
@@ -134,7 +138,13 @@ public class Main2Register extends AppCompatActivity {
                                         userMap.put("lastname",last.toLowerCase());
                                         userMap.put("phone",phone);
 
+
                                            mdatabase.setValue(userMap);
+
+                                           mdatabase.child("sub").child("math").setValue("true");
+                                        mdatabase.child("sub").child("eng").setValue("true");
+                                        mdatabase.child("sub").child("sci").setValue("true");
+
                                            mRegProgress.dismiss();
                                         // Sign in success, update UI with the signed-in user's information
                                         Toast.makeText(Main2Register.this,"REG sucses",Toast.LENGTH_SHORT).show();
@@ -169,6 +179,17 @@ public class Main2Register extends AppCompatActivity {
 
     }
 
+    public void setUsertype(String type){
+
+        SharedPreferences.Editor editor =getSharedPreferences(MY_PREF_FILENAME,MODE_PRIVATE).edit();
+        // editor.putString("user",ss);
+
+
+        editor.putString("type",type);
+        editor.commit();
+
+    }
+
 
     @Override
     public void onStart() {
@@ -183,6 +204,7 @@ public class Main2Register extends AppCompatActivity {
 
             Intent intent =new Intent(Main2Register.this,
                     com.example.eliran.teacherconnection.Workspace.class);
+            Toast.makeText(this,"please logout to create a new user",Toast.LENGTH_LONG);
 
                 startActivity(intent);
                 finish();

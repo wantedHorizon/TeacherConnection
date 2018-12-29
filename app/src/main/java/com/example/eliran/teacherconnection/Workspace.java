@@ -1,5 +1,6 @@
 package com.example.eliran.teacherconnection;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -12,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,12 +33,12 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Workspace extends AppCompatActivity  /*implements  UserAdapter.ItemClicked */{
     public static final String MY_PREF_FILENAME = "com.example.eliran.teacherconnection.DATA";
-    ImageView tel;
+    ImageView tel,yellowmail;
     Button logout;
-    TextView tvType, tvName, tvPhone, tvEmail, tvCity, welcom;
+    TextView tvType, tvName, tvPhone, tvEmail, tvCity, welcom,sub;
     FragmentManager fragmentManager;
     Fragment listFrag, detailFrag;
-    String id = "",usrCity="",usrName,usrLast;
+    String id = "",usrCity="",usrName,usrLast,type="x";
     User user,userShow;
     int userType=-1;//0 - teacher , 1 student;
      DatabaseReference mUserDatabase;
@@ -43,11 +46,15 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
 
     FirebaseAuth mAuth;
 
+
+    //progress dialog
+    ProgressDialog mRegProgress;
+
     Toolbar toolbar1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+     //   usercheck();
 /*
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -65,14 +72,39 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
         toolbar1=(Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar1);
         getSupportActionBar().setTitle("Home");
+        //loading screen
+        mRegProgress=new ProgressDialog(this);
+        mRegProgress.setTitle("Loading  Data");
+        mRegProgress.setMessage("Please wait while data is downloaded");
+        mRegProgress.setCanceledOnTouchOutside(false);
+        mRegProgress.show();
 
         //checks user info
-        usercheck();
+
+        sub=findViewById(R.id.tvSub);
+
 
 
 
 
             welcom = findViewById(R.id.welcomWorkspace);
+          welcom.addTextChangedListener(new TextWatcher() {
+              @Override
+              public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+              }
+
+              @Override
+              public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+              }
+
+              @Override
+              public void afterTextChanged(Editable editable) {
+                  mRegProgress.dismiss();
+
+              }
+          });
 
             tvName = findViewById(R.id.tvName);
 
@@ -81,6 +113,7 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
             tvPhone = findViewById(R.id.tvPhone1);
             tvType = findViewById(R.id.tvType);
             tel = findViewById(R.id.iwTel);
+            yellowmail=findViewById(R.id.iwYellowmail);
 
 
 
@@ -96,12 +129,27 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
                     .hide(detailFrag)
                     .commit();
 
-
             tel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + tvPhone.getText().toString()));
                     startActivity(intent);
+                }
+            });
+            yellowmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String mail="";
+                    mail=tvEmail.getText().toString();
+                    Uri uri = Uri.parse("mailto:" +mail )
+                            .buildUpon()
+                            .appendQueryParameter("subject", "Work")
+                            .appendQueryParameter("body", "Hello ,my name is "+usrName +"\nLets meetup :)")
+                            .build();
+
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, uri);
+                    startActivity(Intent.createChooser(emailIntent, "Private lessom schedule"));
+
                 }
             });
         }
@@ -140,7 +188,7 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
 
         tvCity.setText(u.getCity());
 
-
+        setSubjects(user_id);
         fragmentManager.beginTransaction()
                 .hide(listFrag)
                 .show(detailFrag)
@@ -148,9 +196,36 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
 
     }
 
+    private void setSubjects(String user_id) {
+
+        DatabaseReference mUserDatabase1 = FirebaseDatabase.getInstance().getReference().child("users").child(user_id).child("sub");
+        mUserDatabase1.addListenerForSingleValueEvent(new ValueEventListener() {
 
 
-        //viewholder recview
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Boolean math=Boolean.parseBoolean(dataSnapshot.child("math").getValue().toString());
+                Boolean eng=Boolean.parseBoolean(dataSnapshot.child("eng").getValue().toString());
+                Boolean sci=Boolean.parseBoolean(dataSnapshot.child("sci").getValue().toString());
+                String str="";
+
+                if(math)str+="Math\n";
+                if(eng)str+="English\n ";
+                if(sci)str+="Science";
+
+                sub.setText(str);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    //viewholder recview
 
     public static class samViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
@@ -196,6 +271,7 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
     @Override
     protected void onStart() {
         super.onStart();
+       usercheck();
 
 
     }
@@ -212,6 +288,7 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
         String cUID = mCurrentUser.getUid().toString();
        // this.id = cUID;
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        ;
 
 
         if (currentUser != null) {
@@ -220,21 +297,24 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
             mUserDatabase.addValueEventListener(new ValueEventListener() {
 
 
+
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                   usrCity = dataSnapshot.child("city").getValue().toString()+"";
                   usrName= dataSnapshot.child("name").getValue().toString()+"";
                   usrLast= dataSnapshot.child("lastname").getValue().toString()+"";
                     String types=dataSnapshot.child("type").getValue().toString()+"";
+                    type=types;
                     if (types.equals("teacher"))
                         userType = 0;
                     else userType = 1;
-                    Toast.makeText(Workspace.this,id+"\n"+usrCity+"\n"+userType,Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(Workspace.this,id+"\n"+usrCity+"\n"+userType,Toast.LENGTH_LONG).show();
 
                     if (userType == 0)
                         welcom.setText("Welcome dear " + usrName + "\nHere are some Student for you in " + usrCity);
                     else if(userType==1)
                         welcom.setText("Welcome dear " + usrName + "\nHere are some Teacers for you in " + usrCity);
+
 
 
                 }
@@ -245,6 +325,7 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
 
                 }
             });
+
 
 
         }
@@ -258,6 +339,14 @@ public class Workspace extends AppCompatActivity  /*implements  UserAdapter.Item
         getMenuInflater().inflate(R.menu.main_menu, menu );
         menu.findItem(R.id.menuHomeBTN).setVisible(false);
         return true;
+    }
+//checks type frome saved file
+   public  String getType(){
+       SharedPreferences editor =getSharedPreferences(MY_PREF_FILENAME,MODE_PRIVATE);
+       String type1=editor.getString("type","-1");
+
+        return type1;
+
     }
 
     @Override
