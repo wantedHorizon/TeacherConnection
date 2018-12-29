@@ -12,4 +12,8 @@
     <string name="username">username</string>
     <string name="password1">password</string>
     <string name="email">email</string>
+    <string name="log_out">Log Out</string>
+    <string name="account_setting">Account Setting</string>
+    <string name="home">Home</string>
+    <string name="menuaccountsetting">menuAccountSetting</string>
 </resources>

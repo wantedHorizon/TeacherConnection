@@ -2,6 +2,7 @@ package com.example.eliran.teacherconnection;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
@@ -22,6 +33,16 @@ public class ListFrag extends Fragment {
     RecyclerView recyclerView;
     RecyclerView.Adapter myAdapter;
     RecyclerView.LayoutManager layoutManager;
+    DatabaseReference mDataBaseReference;
+    TextView tvType, tvName, tvPhone, tvEmail, tvCity;
+
+    public RecyclerView mAccountsRV;
+    public DatabaseReference mDatabase;
+    public FirebaseRecyclerAdapter<User,Workspace.samViewHolder> mAccountsAdapter;
+    public FirebaseAuth mAuth;
+
+    FirebaseRecyclerOptions options;
+
     View view;
     int xid;
 
@@ -42,10 +63,80 @@ public class ListFrag extends Fragment {
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        xid=((Workspace)this.getActivity()).id;
-        recyclerView = view.findViewById(R.id.list1);
-        recyclerView.setHasFixedSize(true);
 
+       // xid=((Workspace)this.getActivity()).id;
+        mAccountsRV = (RecyclerView) view.findViewById(R.id.list1);
+        mAccountsRV.setHasFixedSize(true);
+
+        mDatabase=FirebaseDatabase.getInstance().getReference().child("users");
+        mDatabase.keepSynced(true);
+       // mAccountsRV=(RecyclerView)findViewById(R.id.list1);
+
+        DatabaseReference personRef=FirebaseDatabase.getInstance().getReference().child("users");
+
+        Query personQuery =personRef.orderByKey();
+
+
+       // getActivity().
+
+        mAccountsRV.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this.getActivity());
+        mAccountsRV.setLayoutManager(layoutManager);
+       // mAccountsRV.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        FirebaseRecyclerOptions personOptions=new FirebaseRecyclerOptions.Builder<User>().setQuery(personQuery,User.class).build();
+
+
+        mAccountsAdapter=new FirebaseRecyclerAdapter<User, Workspace.samViewHolder>(personOptions) {
+            @Override
+            protected void onBindViewHolder  (@NonNull Workspace.samViewHolder holder, int position, @NonNull final User model) {
+
+                holder.itemView.setTag(model.getEmail());
+
+                holder.tvName.setText(model.getName()+" "+model.getLastname());
+                holder.tvCity.setText("Town: "+model.getCity());
+
+                if (model.getType().toLowerCase().equals("student")) {
+                    holder.ivMake.setImageResource(R.drawable.student_vec);
+                } else {
+                    holder.ivMake.setImageResource(R.drawable.scool_vec);
+                }
+
+                final String user_id=getRef(position).getKey();
+               holder.mView.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View view) {
+                       ((Workspace)getActivity()).onItemClicked(model,user_id);
+
+                   }
+               });
+
+
+
+
+
+
+            }
+
+            @NonNull
+            @Override
+            public Workspace.samViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_layout, parent, false);
+
+                return new Workspace.samViewHolder(view);
+            }
+
+
+        };
+
+        mAccountsRV.setAdapter(mAccountsAdapter);
+
+
+
+
+
+
+
+        /*
         layoutManager = new LinearLayoutManager(this.getActivity());
         recyclerView.setLayoutManager(layoutManager);
         if(xid>=0) {
@@ -55,13 +146,37 @@ public class ListFrag extends Fragment {
         else
             myAdapter = new UserAdapter(this.getActivity(), ApplicationClass.users);
 
+                // 3 myAdapter = new UserAdapter(this.getActivity(), ApplicationClass.users);
 
-        recyclerView.setAdapter(myAdapter);
+        recyclerView.setAdapter(myAdapter);*/
+    }
+
+
+
+    public void onStart() {
+        super.onStart();
+        //FirebaseUser currentUser = mAuth.getCurrentUser();
+
+
+
+        //
+
+        mAccountsAdapter.startListening();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mAccountsAdapter.stopListening();
+
+
     }
 
     public void notifyDataChanged()
     {
-        myAdapter.notifyDataSetChanged();
+        mAccountsAdapter.notifyDataSetChanged();
     }
 
 }
+

@@ -11,16 +11,7 @@ public class ApplicationClass extends Application {
         super.onCreate();
 
         //users=new ArrayList<User>();
-        users.add(new User("eliran ","amzalag","eliran1994","0503050360","tel aviv","Student","1234",1));
-        users.add(new User("eliran"," amzalag","eliran1994","0503050360","tel aviv","Student","1234",1));
 
-        users.add(new User("eli ","cohen","eliran1994","0503050360","tel aviv","Teacher","1234",0));
-
-        users.add(new User("eliran"," amzalag","eliran1994","0503050360","tel aviv","Student","1234",1));
-        users.add(new User("me","ss","x","0503050360","tel aviv","Teacher","1111",0));
-
-        users.add(new User("eliran ","amzalag","eliran1994","0503050360","tel aviv","Student","1234",1));
-        users.add(new User("mosh","aviv","eliran1994","0503050360","tel aviv","Student","1234",1));
 
 
     }

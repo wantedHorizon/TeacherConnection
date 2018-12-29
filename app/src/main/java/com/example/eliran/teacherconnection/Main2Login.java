@@ -26,6 +26,8 @@ public class Main2Login extends AppCompatActivity {
     String idCheck;//Local LOgin
     public static  final String MY_PREF_FILENAME="com.example.eliran.teacherconnection.DATA";
 
+   // private ProgressDialog mLoginProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +40,7 @@ public class Main2Login extends AppCompatActivity {
         Toast.makeText(this,idCheck,Toast.LENGTH_SHORT).show();
 
         mAuth = FirebaseAuth.getInstance();
-
+/*
 
         if(Integer.parseInt(idCheck)>-1){
 
@@ -48,7 +50,7 @@ public class Main2Login extends AppCompatActivity {
             intent.putExtra("userID",Integer.parseInt(idCheck) );
             startActivity(intent);
 
-        }
+        }*/
 
         user=findViewById(R.id.etUsername);
         password=findViewById((R.id.etPassword));
@@ -77,8 +79,20 @@ public class Main2Login extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
+
+                                        String ss=mAuth.getUid().toString();
+                                        SharedPreferences.Editor editor =getSharedPreferences(MY_PREF_FILENAME,MODE_PRIVATE).edit();
+                                        editor.putString("user",ss);
+                                        editor.commit();
                                         Toast.makeText(Main2Login.this, "signInWithEmail:success",Toast.LENGTH_SHORT).show();
                                         FirebaseUser user = mAuth.getCurrentUser();
+                                        Intent intent = new Intent(com.example.eliran.teacherconnection.Main2Login.this,
+                                                com.example.eliran.teacherconnection.Workspace.class);
+
+                                      //  intent.putExtra("userID", x);
+                                        startActivity(intent);
+                                        finish();
+
                                         // updateUI(user);
                                     } else {
                                         // If sign in fails, display a message to the user.
@@ -99,7 +113,7 @@ public class Main2Login extends AppCompatActivity {
 
 
                     //old Local login check
-                    int x=checkLogin(Suser,Spass);
+                   /* int x=checkLogin(Suser,Spass);
 
                     if(x==-1){
                       //  Toast.makeText(Main2Login.this,"login failure  "+x,Toast.LENGTH_LONG).show();
@@ -116,11 +130,11 @@ public class Main2Login extends AppCompatActivity {
                         startActivity(intent);*/
                        // Toast.makeText(Main2Login.this,"Login succesful:"+Suser+";"+Spass,Toast.LENGTH_LONG).show();
 
-                        SharedPreferences.Editor editor =getSharedPreferences(MY_PREF_FILENAME,MODE_PRIVATE).edit();
+                /*        SharedPreferences.Editor editor =getSharedPreferences(MY_PREF_FILENAME,MODE_PRIVATE).edit();
                         editor.putString("user",""+x);
                         editor.commit();
                         Intent intent = new Intent(com.example.eliran.teacherconnection.Main2Login.this,
-                                com.example.eliran.teacherconnection.Workspace.class);
+                                com.example.eliran.teacherconnection.AccountSetting.class);
 
                         intent.putExtra("userID", x);
                         startActivity(intent);
@@ -128,7 +142,7 @@ public class Main2Login extends AppCompatActivity {
 
 
 
-                    }
+                    }*/
 
                 }
             }
@@ -148,7 +162,7 @@ public class Main2Login extends AppCompatActivity {
         if(currentUser!=null){//if user is loged out
 
             Intent intent =new Intent(Main2Login.this,
-                    com.example.eliran.teacherconnection.MainActivity.class);// need to be changed to workspace
+                    com.example.eliran.teacherconnection.Workspace.class);// need to be changed to workspace
 
                 startActivity(intent);
                 finish();
@@ -164,7 +178,7 @@ public class Main2Login extends AppCompatActivity {
         for (int i = 0; i <ApplicationClass.users.size()-1 ; i++) {
             x =ApplicationClass.users.get(i);
             System.out.println(x);
-            if( (username.equals(x.username))    &&password.equals(x.password))
+            if( (username.equals(x.getEmail()))    &&password.equals(x.password))
                 return i;
 
         }

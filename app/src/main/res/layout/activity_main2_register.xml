@@ -12,7 +12,7 @@
         android:id="@+id/tvReg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="50dp"
         android:gravity="center_horizontal"
         android:text="Registration"
         android:textSize="24sp"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="15dp"
         android:ems="10"
         android:hint="First Name"
@@ -39,6 +39,33 @@
         android:ems="10"
         android:hint="Lastname"
         android:inputType="textPersonName" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="15dp"
+        android:orientation="horizontal">
+
+        <AutoCompleteTextView
+            android:id="@+id/regType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:clickable="true"
+            android:editable="false"
+            android:text="choose account type" />
+
+        <ImageView
+            android:id="@+id/iwArrow"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@mipmap/baseline_arrow_drop_down_black_18dp" />
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/regEmail"
@@ -85,32 +112,6 @@
         android:inputType="textPersonName" />
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginRight="15dp"
-        android:orientation="horizontal">
-
-        <AutoCompleteTextView
-            android:id="@+id/regType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="50dp"
-            android:clickable="true"
-            android:editable="false"
-            android:text="choose account type" />
-
-        <ImageView
-            android:id="@+id/iwArrow"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@mipmap/baseline_arrow_drop_down_black_18dp" />
-
-    </LinearLayout>
     <Button
         android:id="@+id/btnReg1"
         android:layout_width="match_parent"

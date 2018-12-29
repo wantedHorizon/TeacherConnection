@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 public class User {
 
-    String name,last,username, phone, city,type,password;
+    String name,lastname,email, phone, city,type,password;
     int accountType;
 
     public User(String name, String last, String username, String phone, String city, String type, String password, int accountType) {
         this.name = (""+name.charAt(0)).toUpperCase()+name.substring(1).toLowerCase();
-        this.last = (""+last.charAt(0)).toUpperCase()+last.substring(1).toLowerCase();
-        this.username = username;
+        this.lastname = (""+last.charAt(0)).toUpperCase()+last.substring(1).toLowerCase();
+        this.email = username;
         this.phone = phone;
         this.city = city;
         this.type = type;
@@ -18,6 +18,23 @@ public class User {
         this.accountType = accountType;
     }
 
+    public User(){
+
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", last='" + lastname + '\'' +
+                ", username='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", city='" + city + '\'' +
+                ", type='" + type + '\'' +
+                ", password='" + password + '\'' +
+                ", accountType=" + accountType +
+                '}';
+    }
 
     public String getName() {
         return name;
@@ -27,20 +44,20 @@ public class User {
         this.name = name;
     }
 
-    public String getLast() {
-        return last;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLast(String last) {
-        this.last = last;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String username) {
+        this.email = username;
     }
 
     public String getPhone() {
