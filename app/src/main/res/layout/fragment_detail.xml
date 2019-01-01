@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".DetailFrag">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="Contact Info"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="TextView"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="TextView"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvCity1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="TextView"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="TextView"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvPhone1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="TextView"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvSubjects"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="40dp"
+        android:text="Subjects: "
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/tvSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:text="Math\nEnglish\nScience"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iwTel"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="15dp"
+            android:clickable="true"
+            app:srcCompat="@drawable/phone_green" />
+
+        <ImageView
+            android:id="@+id/iwYellowmail"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="40dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:src="@drawable/yellow_mail" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/friendRequestBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorAccent"
+            android:paddingLeft="5dp"
+            android:paddingRight="3dp"
+            android:text="Connection  Request" />
+
+        <Button
+            android:id="@+id/btnDeclineconnection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
+            android:background="@color/colorAccent"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Decline Connection" />
+    </LinearLayout>
+
+</LinearLayout>
